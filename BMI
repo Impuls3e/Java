@@ -1,0 +1,154 @@
+package com.project.bmi2;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+public class MainActivity extends AppCompatActivity {
+    EditText editText1;
+    EditText editText2;
+    TextView resultText;
+    ImageView imageView;
+    SharedPreferences sharedPreferences;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+
+        editText1 = findViewById(R.id.editText1);
+        editText2 =findViewById(R.id.editText2);
+        resultText =findViewById(R.id.resultText);
+        imageView=findViewById(R.id.imageView);
+        sharedPreferences = this.getSharedPreferences("com.project.bmi2", Context.MODE_PRIVATE);
+
+        float stored = sharedPreferences.getFloat("stored",0);
+
+        if (stored == 0) {
+            resultText.setText("Your BMI: ");
+        } else {
+            resultText.setText("Your BMI: " + stored);
+        }
+
+
+    }
+
+    public void calculate(View view){
+        if (editText1.getText().toString().matches("") || editText2.getText().toString().matches("")){
+            resultText.setText("Enter Number");
+        }
+
+        else {
+
+            float number1 = Float.parseFloat(editText1.getText().toString());
+            float number2 = Float.parseFloat(editText2.getText().toString());
+            float result =10000 * (number2/(number1*number1) );
+            if (  result< 18.4){
+                resultText.setText("You're Thin      Your BMI:"+result);
+                imageView.setImageResource(R.drawable.thin);
+            }
+            else if( 18.4 < result  && result<24.9){
+
+                resultText.setText("You're Normal      Your BMI:"+result );
+                imageView.setImageResource(R.drawable.normal);
+
+            }
+            else if(24.9<result && result<30){
+                resultText.setText("You're Overweight      Your BMI:"+result );
+                imageView.setImageResource(R.drawable.overweight);
+
+            }
+            else {
+                resultText.setText("Obesity      Your BMI:" + result);
+                imageView.setImageResource(R.drawable.obesity);
+            }
+            if (!editText1.getText().toString().matches("")|| !editText2.getText().toString().matches("") ) {
+                result =10000 * (number2/(number1*number1) );
+                resultText.setText("Your BMI: " + result);
+
+
+                sharedPreferences.edit().putFloat("stored", result).apply();
+
+
+            }
+
+
+        }
+
+    }}
+--------------------------------------------------------------------------------------------------------------------------------------------------
+   
+XML CODE
+
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <EditText
+        android:id="@+id/editText2"
+        android:layout_width="189dp"
+        android:layout_height="42dp"
+        android:ems="10"
+        android:hint="Weight                      kg"
+        android:inputType="numberDecimal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editText1" />
+
+    <TextView
+        android:id="@+id/resultText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="BMI = "
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/editText1"
+        android:layout_width="189dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="60dp"
+        android:ems="10"
+        android:hint="Height                     cm"
+        android:inputType="numberDecimal"
+        app:layout_constraintBottom_toTopOf="@+id/editText2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/Button"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:onClick="calculate"
+        android:text="Calculate"
+        app:layout_constraintBottom_toTopOf="@+id/resultText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editText2"
+        app:layout_constraintVertical_bias="0.62" />
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/resultText"
+        app:srcCompat="@drawable/bb1" />
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
